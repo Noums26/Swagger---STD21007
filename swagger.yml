@@ -77,7 +77,7 @@ paths:
                     name:
                       type: string
                       
-         400:
+        400:
           description: Bad request
                       
 components:
