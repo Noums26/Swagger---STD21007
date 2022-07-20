@@ -52,6 +52,7 @@ paths:
       summary: Create new students
       description: Create new students from an array
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -80,12 +81,11 @@ paths:
         - Students
       summary: Update student
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Student'
+              $ref: '#/components/schemas/Student'
       responses:
         200:
           description: Student updated
@@ -104,13 +104,46 @@ paths:
       tags:
         - Students
       summary: Update student
+      description: |
+        Possible updates on:
+        * name: change
+        * address: change
+        * birth_date: change
+        * phoneNumbers: add
+      operationId: patchStudent
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Student'
+              $ref: '#/components/schemas/Student'
+            examples:
+              changeName:
+                summary: Change name
+                description: How to change name and that it does
+                value:
+                  id: 1
+                  name: "New value"
+              changeAddress:
+                summary: Change address
+                value:
+                  id: 1
+                  adress: "New value"
+              changeNameAndAddress:
+                summary: Change name and address but not all
+                value:
+                  id: 1
+                  name: "New value"
+                  address: "New value"
+              addNewPhoneNumbers:
+                summary: add new phone numbers
+                value:
+                  id: 1
+                  phoneNumbers:
+                  - number: '0322165498'
+                    country_code: '261'
+                  - number: '0334578963'
+                    country_code: '261'
       responses:
         200:
           description: Student updated
@@ -213,6 +246,7 @@ paths:
         - Courses
       summary: Create new course
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -241,12 +275,11 @@ paths:
         - Courses
       summary: Update course
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Courses'
+              $ref: '#/components/schemas/Courses'
       responses:
         200:
           description: course updated
@@ -266,12 +299,11 @@ paths:
         - Courses
       summary: Update course
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Courses'
+              $ref: '#/components/schemas/Courses'
       responses:
         200:
           description: course updated
@@ -336,6 +368,15 @@ paths:
                       
 components:
   schemas:
+    PhoneNumber:
+      type: object
+      properties:
+        number: 
+          type: string
+          example: '0341245678'
+        country_code: 
+          type: string
+          example: '261'
     CreateStudent:
       type: object
       properties:
@@ -345,9 +386,13 @@ components:
           type: string
           format: date
           example: "2022-01-01"
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
     Student:
       allOf:
-       - $ref: '#/components/schemas/CreateStudent'
+        - $ref: '#/components/schemas/CreateStudent'
       type: object
       properties:
         id:
