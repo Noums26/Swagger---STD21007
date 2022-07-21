@@ -1,0 +1,462 @@
+openapi: 3.0.1
+info:
+  title: Cinema - STD21007 API
+  description: 'Cinema - STD21007 API'
+  version: 1.0.0
+servers:
+- url: https://std21007.com
+tags:
+- name: Films
+- name: Diffusions
+paths:
+  /films:
+    get:
+      tags:
+      - Films
+      summary: Get all Films
+      description: Get all films with details
+      parameters:
+        - name: page
+          in: query
+          style: form
+          explode: true
+          required: true
+          schema: 
+            type: integer
+        - name: page_size
+          in: query
+          style: form
+          explode: true
+          required: true
+          schema: 
+            type: integer
+      responses:
+        200: 
+          description: List of films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    post:
+      tags:
+        - Films
+      summary: Create new film
+      description: Create new film from an array
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFilm'
+      responses:
+        200:
+          description: List of films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    put:
+      tags:
+        - Films
+      summary: Update film
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnlyFilm'
+      responses:
+        200:
+          description: the film
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    patch:
+      tags:
+        - Films
+      summary: Update film
+      description: |
+        Possible updates on:
+        * titre: change
+        * resume: change
+      operationId: patchFilm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnlyFilm'
+            examples:
+              changeTitre:
+                summary: Change titre
+                description: How to change titre
+                value:
+                  id: 1
+                  titre: "New value"
+              changeResume:
+                summary: Change resume
+                description: How to change resume
+                value:
+                  id: 1
+                  resume: "New value"
+              changeTitreEtResume:
+                summary: Change titre et resume
+                description: How to change resume
+                value:
+                  id: 1
+                  titre: "new value"
+                  resume: "New value"
+      responses:
+        200:
+          description: List of films
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+  /films/{id}:
+    get:
+      tags:
+      - Films
+      summary: Get a Film
+      description: Get a film with details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200: 
+          description: Details of film
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    delete:
+      tags:
+      - Films
+      summary: Delete a Film
+      description: Delete a film
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200: 
+          description: Film deleted
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+
+  /diffusion:
+    get:
+      tags:
+      - Diffusions
+      summary: Get all Films
+      description: Get all films with details
+      parameters:
+        - name: page
+          in: query
+          style: form
+          explode: true
+          required: true
+          schema: 
+            type: integer
+        - name: page_size
+          in: query
+          style: form
+          explode: true
+          required: true
+          schema: 
+            type: integer
+      responses:
+        200: 
+          description: List of films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFilm'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    post:
+      tags:
+        - Diffusions
+      summary: Create new diffusions
+      description: Create new diffusions from an array
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateDiffusion'
+      responses:
+        200:
+          description: List of diffusions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFilm'
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    put:
+      tags:
+        - Diffusions
+      summary: Update diffusion
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetFilm'
+      responses:
+        200:
+          description: List of films
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFilm'
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    patch:
+      tags:
+        - Diffusions
+      summary: Update diffusion
+      description: |
+        Possible updates on:
+        * date_de_diffusion: change
+        * heure_de_diffusion: change
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetFilm'
+            examples:
+              changeDate:
+                summary: Change date
+                description: How to change date
+                value:
+                  id: 1
+                  date_de_diffusion: "21-07-2022"
+              changeHeure:
+                summary: Change heure
+                description: How to change heure
+                value:
+                  id: 1
+                  heure_de_diffusion: "21:19"
+              changeDateEtHeure:
+                summary: Change date et heure de diffusion
+                description: How to change date et heure
+                value:
+                  id: 1
+                  date_de_diffusion: "21-07-2022"
+                  heure_de_diffusion: "21:19"
+      responses:
+        200:
+          description: List of films
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /diffusion/{id}:
+    get:
+      tags:
+      - Diffusions
+      summary: Get a diffusion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200: 
+          description: Details of film
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFilm'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    delete:
+      tags:
+      - Diffusions
+      summary: Delete a diffusion
+      description: Delete a diffusion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200: 
+          description: Film deleted
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+
+components:
+  schemas:
+    CreateFilm:
+      type: object
+      properties:
+        titre:
+          type: string
+        duree:
+          type: string
+          format: time
+          example: "01:42"
+        resume:
+          type: string
+        realisateur:
+          type: string
+        date_de_sortie:
+          type: string
+          format: date
+          example: "2022-07-14"
+    OnlyFilm:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CreateFilm'
+      properties:
+        id:
+          type: integer
+    CreateDiffusion:
+      type: object
+      properties:
+        id_film:
+          type: integer
+        salle: 
+          $ref: '#/components/schemas/Salle'
+        date_de_diffusion:
+          type: string
+          format: date
+          example: "21-07-2022"
+        heure_de_diffusion:
+          type: string
+          format: time
+          example: "10:12"
+    GetFilm:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Film'
+      properties:
+        id:
+          type: integer
+    Film:
+      type: object
+      properties:
+        film:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/OnlyFilm'
+        diffusion:
+          type: object
+          properties:
+            salle: 
+              $ref: '#/components/schemas/Salle'
+            date_de_diffusion:
+              type: string
+              format: date
+              example: "21-07-2022"
+            heure_de_diffusion:
+              type: string
+              format: time
+              example: "10:12"
+    Salle:
+      type: object
+      properties:
+        numero:
+          type: integer
+          example: 1
+        capacite: 
+          type: integer
+          example: 404
+    BadRequest:
+      type: object
+      properties:
+        code: 
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Bad request
+
+      
+
+    
