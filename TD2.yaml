@@ -189,6 +189,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequest"
+                
+  /films/category:
+    get:
+      tags:
+      - Films
+      summary: Select films by category
+      parameters:
+        - name: category
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200: 
+          description: List of films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OnlyFilm'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
 
   /diffusion:
     get:
@@ -369,6 +396,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequest"
+  /diffusion/category:
+    get:
+      tags:
+      - Diffusions
+      summary: Select films diffusion by category
+      parameters:
+        - name: category
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200: 
+          description: List of films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFilm'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+
 
 components:
   schemas:
@@ -389,6 +443,12 @@ components:
           type: string
           format: date
           example: "2022-07-14"
+        category:
+          type: array
+          items:
+            type: string
+            example: "commedie"
+            
     OnlyFilm:
       type: object
       allOf:
@@ -441,9 +501,9 @@ components:
     Salle:
       type: object
       properties:
-        numero:
-          type: integer
-          example: 1
+        nom:
+          type: string
+          enum: ["A", "B"]
         capacite: 
           type: integer
           example: 404
@@ -456,6 +516,7 @@ components:
         message:
           type: string
           example: Bad request
+    
 
       
 
