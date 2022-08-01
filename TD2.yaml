@@ -8,7 +8,55 @@ servers:
 tags:
 - name: Films
 - name: Diffusions
+- name: Room
 paths:
+  /rooms:
+    get:
+      tags:
+      - Room
+      summary: Get all rooms
+      responses:
+        200:
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+
+  /rooms/{name}:
+    get:
+      tags:
+      - Room
+      summary: Get the room
+      parameters:
+        - name: name
+          in: path
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+          200:
+            description: Details of the room
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Room'
+          400:
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/BadRequest"
+
   /films:
     get:
       tags:
@@ -86,54 +134,6 @@ paths:
       responses:
         200:
           description: the film
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnlyFilm'
-        400:
-          description: BadRequest
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequest'
-    patch:
-      tags:
-        - Films
-      summary: Update film
-      description: |
-        Possible updates on:
-        * titre: change
-        * resume: change
-      operationId: patchFilm
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OnlyFilm'
-            examples:
-              changeTitre:
-                summary: Change titre
-                description: How to change titre
-                value:
-                  id: 1
-                  titre: "New value"
-              changeResume:
-                summary: Change resume
-                description: How to change resume
-                value:
-                  id: 1
-                  resume: "New value"
-              changeTitreEtResume:
-                summary: Change titre et resume
-                description: How to change resume
-                value:
-                  id: 1
-                  titre: "new value"
-                  resume: "New value"
-      responses:
-        200:
-          description: List of films
           content:
             application/json:
               schema:
@@ -304,54 +304,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequest'
-    patch:
-      tags:
-        - Diffusions
-      summary: Update diffusion
-      description: |
-        Possible updates on:
-        * date_de_diffusion: change
-        * heure_de_diffusion: change
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetFilm'
-            examples:
-              changeDate:
-                summary: Change date
-                description: How to change date
-                value:
-                  id: 1
-                  date_de_diffusion: "21-07-2022"
-              changeHeure:
-                summary: Change heure
-                description: How to change heure
-                value:
-                  id: 1
-                  heure_de_diffusion: "21:19"
-              changeDateEtHeure:
-                summary: Change date et heure de diffusion
-                description: How to change date et heure
-                value:
-                  id: 1
-                  date_de_diffusion: "21-07-2022"
-                  heure_de_diffusion: "21:19"
-      responses:
-        200:
-          description: List of films
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnlyFilm'
-        400:
-          description: BadRequest
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequest'
-
+    
   /diffusion/{id}:
     get:
       tags:
@@ -429,25 +382,24 @@ components:
     CreateFilm:
       type: object
       properties:
-        titre:
+        title:
           type: string
-        duree:
+        duration:
           type: string
           format: time
           example: "01:42"
-        resume:
+        summary:
           type: string
-        realisateur:
+        producer:
           type: string
-        date_de_sortie:
+        release_date:
           type: string
           format: date
           example: "2022-07-14"
         category:
           type: array
           items:
-            type: string
-            example: "commedie"
+            $ref: '#/components/schemas/Category'
             
     OnlyFilm:
       type: object
@@ -462,15 +414,11 @@ components:
         id_film:
           type: integer
         salle: 
-          $ref: '#/components/schemas/Salle'
-        date_de_diffusion:
+          $ref: '#/components/schemas/Room'
+        projection:
           type: string
-          format: date
-          example: "21-07-2022"
-        heure_de_diffusion:
-          type: string
-          format: time
-          example: "10:12"
+          format: date-time
+
     GetFilm:
       type: object
       allOf:
@@ -488,25 +436,28 @@ components:
         diffusion:
           type: object
           properties:
-            salle: 
-              $ref: '#/components/schemas/Salle'
-            date_de_diffusion:
+            room: 
+              $ref: '#/components/schemas/Room'
+            projection:
               type: string
-              format: date
-              example: "21-07-2022"
-            heure_de_diffusion:
-              type: string
-              format: time
-              example: "10:12"
-    Salle:
+              format: date-time
+    Category: 
       type: object
       properties:
-        nom:
+        id:
+          type: integer
+        value:
+          type: string
+          example: comedy
+    Room:
+      type: object
+      properties:
+        name:
           type: string
           enum: ["A", "B"]
-        capacite: 
+        capacity: 
           type: integer
-          example: 404
+          example: 125
     BadRequest:
       type: object
       properties:
@@ -516,8 +467,4 @@ components:
         message:
           type: string
           example: Bad request
-    
-
-      
-
     
