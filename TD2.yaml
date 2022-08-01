@@ -9,7 +9,36 @@ tags:
 - name: Films
 - name: Diffusions
 - name: Room
+- name: Calendar
+
 paths:
+  /calendar/{date_of_a_week}:
+    get:
+      tags:
+      - Calendar
+      summary: Get all projection on a week
+      parameters:
+        - name: date_of_a_week
+          in: path
+          required: true
+          explode: true
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarOnWeek'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    
   /rooms:
     get:
       tags:
@@ -458,6 +487,33 @@ components:
         capacity: 
           type: integer
           example: 125
+    CalendarOnWeek:
+      type: object
+      properties:
+        Monday dd-mm:
+          type: object
+          properties:
+            08-00am: 
+              $ref: '#/components/schemas/AProjection'
+            11-00am: 
+              $ref: '#/components/schemas/AProjection'
+              
+    AProjection:
+      type: object
+      properties:
+        film: 
+          type: string
+          example: title of a film
+        duration: 
+          type: string
+          format: time
+          example: 02:14
+        summary: 
+          type: string
+        room: 
+          type: string
+          example: A
+                  
     BadRequest:
       type: object
       properties:
